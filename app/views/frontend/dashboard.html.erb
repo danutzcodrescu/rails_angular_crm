@@ -1,0 +1,19 @@
+<div ng-app="crm" ng-controller="PageController as menu" class="container-fluid">
+    <div class="row">
+        <nav ng-class="menu.message ? (menu.size>=768 ? 'col-sm-2' : 'col-xs-12')
+                       : (menu.size>=768 ? 'col-sm-1' : 'col-xs-12')" style="background-color: blue; height: 100%;"
+             ng-style="menu.menu_width">
+            
+              <span class="glyphicon glyphicon-menu-hamburger menu" aria-hidden="true" 
+                     ng-click="menu.message=!menu.message">
+              </span>
+        </nav>
+        <div ng-class="menu.message ? (menu.size>=768 ? 'col-sm-10' : 'col-xs-12') 
+                        : (menu.size>=768 ? 'col-sm-11' : 'col-xs-12')" 
+             ng-style="menu.container_width">
+                <div ui-view></div>
+                
+        </div>
+    </div>
+    
+</div>

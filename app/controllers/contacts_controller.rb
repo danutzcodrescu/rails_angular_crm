@@ -4,11 +4,15 @@ class ContactsController < ApplicationController
   # GET /contacts
   # GET /contacts.json
   def index
-      if !params[:email].nil?
+      if !params[:limit].nil?
         find = Search.new(params)
         @contacts = find.query
       else
         @contacts = Contact.limit(30).offset(0)
+      end
+      respond_to do |format|
+        format.html {}
+        format.json { render json: @contacts }
       end
   end
 

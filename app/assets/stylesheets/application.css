@@ -14,3 +14,12 @@
  *= require_self
  *= require 'bootstrap-sass-official'
  */
+
+.menu {
+    color: white; 
+    font-weight: bold; 
+    font-size: 20px;
+    padding: 6.5px; 
+    border: 3px solid white;
+    border-radius:7.5px;
+}

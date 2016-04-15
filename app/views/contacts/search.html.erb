@@ -4,7 +4,15 @@
   <%= text_field_tag(:first_name) %>
   <%= label_tag(:last_name, "Last name") %>
   <%= text_field_tag(:last_name) %>
+   <%= label_tag(:organization, "Organization") %>
+  <%= text_field_tag(:organization) %>
   <%= label_tag(:email, "Email") %>
   <%= email_field_tag(:email) %>
+  <%= label_tag(:phone_number, "Phone number") %>
+  <%= telephone_field_tag(:phone_number) %>
+  <%= label_tag(:responsible, "Responsible") %>
+  <%= text_field_tag(:responsible) %>
+  <%= label_tag(:main_category, "Category") %>
+  <%= text_field_tag(:main_category) %>
   <%= submit_tag("Search") %>
 <% end %>
