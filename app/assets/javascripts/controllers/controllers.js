@@ -1,4 +1,4 @@
-app.controller('PageController', ['contactFactory','$scope', '$window', function(contactFactory,$scope, $window) {
+app.controller('PageController', ['$scope', '$window', function($scope, $window) {
   var page=this;
   this.size=$window.innerWidth;
   this.message = false;
@@ -15,14 +15,29 @@ app.controller('PageController', ['contactFactory','$scope', '$window', function
       $scope.$apply();
   };
 }]);    
-app.controller('ContactController', ['contactFactory', '$stateParams', function(contactFactory, $stateParams) {
+app.controller('ContactsController', ['contacts', '$scope', function(contacts, $scope) {
   contact=this;
-  contactFactory.getContact().query(
-       {limit:2, offset:0},
+  /*contactFactory.getContact().query({limit:3},
        function(response) {
          contact.contacts=response;
        }, 
        function(response) {
          console.log(response.statusText);
-       });
+       });*/
+  contact.contacts=contacts;
 }]);
+
+app.controller('ContactController', ['$scope', '$stateParams', function($scope, $stateParams) {
+  contact=this;
+/*parameter="show";
+  contactFactory.getContact(parameter).get({id:parseInt($stateParams.id)},
+       function(response) {
+         contact.contact=response;
+         console.log($state.current.name);
+       }, 
+       function(response) {
+         console.log(response.statusText);
+       });*/
+    contact.contact=$scope.contact.contacts[$stateParams.id];
+}]);
+

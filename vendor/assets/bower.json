@@ -5,6 +5,7 @@
     "angular-latest": "latest",
     "angular-ui-router": "latest",
     "angular-media-queries": "latest",
-    "angular-resource": "latest"
+    "angular-resource": "latest",
+    "ngInfiniteScroll": "latest"
   }
 }
