@@ -1,5 +1,5 @@
 app.controller('PageController', ['$scope', '$window', function($scope, $window) {
-  var page=this;
+  page=this;
   page.size=$window.innerWidth;
   page.message = false;
   
@@ -7,10 +7,10 @@ app.controller('PageController', ['$scope', '$window', function($scope, $window)
   page.menu_width = function() {
     return {width: page.message ? ( page.size>=768 ? '160px' : '' ) : ( page.size>=768 ? '80px' : '')}
   };
-  this.container_width = function() {
+  page.container_width = function() {
     return {width: page.message ? (page.size>=768 ? size-160+'px' : '') : (page.size>=768 ? page.size-80+'px' : '')}
   }; 
-                         
+  
   // remove this function after implementation - just for testing purposes                       
   $window.onresize = function () {
       page.size=$window.innerWidth;
@@ -18,14 +18,13 @@ app.controller('PageController', ['$scope', '$window', function($scope, $window)
   };
 }]);    
 
-app.controller('ContactsController', ['contacts', 'contactFactory', '$scope', function(contacts, contactFactory, $scope) {
+app.controller('ContactsController', ['contactFactory', '$scope', 'contacts', function(contactFactory, $scope, contacts) {
   var contact=this;
   contact.contacts=contacts;
-  contact.scroll=true;
   
   // declare the offset counter
   var offset=10;
-
+  
   // infinite-scroll function
   contact.loadMore=function() {
     contactFactory.getContact().query({limit: 10, offset: offset}, 
@@ -39,19 +38,14 @@ app.controller('ContactsController', ['contacts', 'contactFactory', '$scope', fu
       })
       offset+=10;
   }
- 
-  contact.go=function(id) {
-      $scope.$broadcast('contactsArray', {index: id});
-  }
+  
 
 }]);
 
-app.controller('ContactController', ['$scope', 'one', function($scope, one) {
+app.controller('ContactController', ['$scope', 'one_contact', function($scope, one_contact) {
   var contact=this;
-  console.log("works");
+  contact.contact=one_contact;
   
-  
-contact.contact = one;
                              
 }]);
 

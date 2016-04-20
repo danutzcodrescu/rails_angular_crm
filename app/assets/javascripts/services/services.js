@@ -1,6 +1,6 @@
-app.factory('contactFactory', ['$resource', 'baseURL', function($resource,baseURL) {
+app.factory('contactFactory', ['$resource', 'baseURL', function($resource, baseURL) {
     var contact={}
-    contact.getContact=function(){
+    contact.getContact=function(parameter){
         switch (true) {
             case parameter == undefined :
                 var resource=$resource(baseURL + "contacts.json/");

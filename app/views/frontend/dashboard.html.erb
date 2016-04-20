@@ -7,6 +7,9 @@
               <span class="glyphicon glyphicon-menu-hamburger menu" aria-hidden="true" 
                      ng-click="menu.message=!menu.message">
               </span>
+              <ul>
+                  <li><a ui-sref="contacts">contacts</a></li>
+              </ul>
         </nav>
         <div ng-class="menu.message ? (menu.size>=768 ? 'col-sm-10' : 'col-xs-12') 
                         : (menu.size>=768 ? 'col-sm-11' : 'col-xs-12')" 
