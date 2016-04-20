@@ -30,6 +30,7 @@ var app=angular.module('crm', ['ui.router', 'ngResource', 'templates', 'infinite
                     templateUrl: 'contact.html',
                     controller: 'ContactController',
                     controllerAs: 'contact',
+                    parent: 'contacts',
                     resolve: {one_contact:  ['contactFactory', '$stateParams', function(contactFactory, $stateParams) {
                         var parameter="show"
                         return contactFactory.getContact(parameter).get({id:parseInt($stateParams.id)}, 

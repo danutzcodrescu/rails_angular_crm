@@ -18,7 +18,7 @@ app.controller('PageController', ['$scope', '$window', function($scope, $window)
   };
 }]);    
 
-app.controller('ContactsController', ['contactFactory', '$scope', 'contacts', function(contactFactory, $scope, contacts) {
+app.controller('ContactsController', ['$scope', 'contactFactory', 'contacts', '$state', '$timeout', '$rootScope', function($scope, contactFactory, contacts, $state, $timeout, $rootScope) {
   var contact=this;
   contact.contacts=contacts;
   
@@ -37,8 +37,18 @@ app.controller('ContactsController', ['contactFactory', '$scope', 'contacts', fu
         contact.contacts=contact.contacts.concat(array);
       })
       offset+=10;
-  }
+  };
   
+  contact.go=function(id) {
+     $state.go('contacts.contact-detail', {id:id});
+     $timeout(function(){
+          //boardcast will available to every listener
+        $rootScope.$broadcast('myCustomEvent', {
+  someProp: 'Sending you an Object!' // send whatever you want
+});
+        });
+     
+  }
 
 }]);
 
@@ -46,6 +56,10 @@ app.controller('ContactController', ['$scope', 'one_contact', function($scope, o
   var contact=this;
   contact.contact=one_contact;
   
-                             
+     
+
+   $scope.$on('myCustomEvent', function (event, data) {
+  alert(data.someProp); // 'Data to send'
+});
 }]);
 

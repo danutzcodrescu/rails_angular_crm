@@ -1,11 +1,11 @@
 <section>
-    
+
         <h3>Contacts</h3>
         <div infinite-scroll='contacts.loadMore()'>
             <article class="col-sm-12" ng-repeat="contact in contacts.contacts">
                 <div class="panel panel-primary">
                     <div class="panel-heading h4" style="margin-top: 0;"><span class="glyphicon glyphicon-user" style="padding-right: 10px;"></span>{{contact.first_name}} {{contact.last_name}}</div>
-                    <a ui-sref="contacts.contact-detail({id:{{contact.id}}})" ng-click="contacts.go(id=$index)">check him</a>
+                    <button ng-click="contacts.go(contact.id)">check him</button>
                     <div class="panel-body">
                         <span class="h5">{{contact.organization}}</span>
                         <div class="row">
@@ -16,11 +16,12 @@
                                 <a href="tel:{{contact.phone_number}}"><span class="glyphicon glyphicon-phone-alt" style="padding-right: 10px;"></span>{{contact.phone_number}}</a>
                             </div>
                         </div>
-                     </div>     
+                     </div> 
+                     
                 </div>
             </article>
             <!-- without the clearfix the article's height would be 0 and it will generate an infinite loop of queries -->
             <div class="clearfix"></div>
         </div>
-
+    
 </section>
