@@ -1,22 +1,26 @@
 <section>
- 
         <h3>Contacts</h3>
-        <article class="col-sm-12" ng-repeat="contact in contacts.contacts">
-            <div class="panel panel-primary">
-                <div class="panel-heading h4" style="margin-top: 0;"><span class="glyphicon glyphicon-user" style="padding-right: 10px;"></span>{{contact.first_name}} {{contact.last_name}}</div>
-                <a ui-sref="contacts.contact-detail({id:{{$index}}})">check him</a>
-                <div class="panel-body">
-                    <span class="h5">{{contact.organization}}</span>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <a href="mailto:{{contact.email}}"><span class="glyphicon glyphicon-envelope" style="padding-right: 10px;"></span>{{contact.email}}</a>
+        <div infinite-scroll='contacts.loadMore()'>
+            <article class="col-sm-12" ng-repeat="contact in contacts.contacts">
+                <div class="panel panel-primary">
+                    <div class="panel-heading h4" style="margin-top: 0;"><span class="glyphicon glyphicon-user" style="padding-right: 10px;"></span>{{contact.first_name}} {{contact.last_name}}</div>
+                    <a ui-sref="contacts.contact-detail({id:{{contact.id}}})" ng-click="contacts.go(id=$index)">check him</a>
+                    <div class="panel-body">
+                        <span class="h5">{{contact.organization}}</span>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <a href="mailto:{{contact.email}}"><span class="glyphicon glyphicon-envelope" style="padding-right: 10px;"></span>{{contact.email}}</a>
+                            </div>
+                            <div class="col-sm-4">
+                                <a href="tel:{{contact.phone_number}}"><span class="glyphicon glyphicon-phone-alt" style="padding-right: 10px;"></span>{{contact.phone_number}}</a>
+                            </div>
                         </div>
-                        <div class="col-sm-4">
-                            <a href="tel:{{contact.phone_number}}"><span class="glyphicon glyphicon-phone-alt" style="padding-right: 10px;"></span>{{contact.phone_number}}</a>
-                        </div>
-                    </div>
-                 </div>     
-            </div>
-        </article>
-        
+                     </div>     
+                </div>
+            </article>
+            <!-- without the clearfix the article's height would be 0 and it will generate an infinite loop of queries -->
+            <div class="clearfix"></div>
+        </div>
+
+
 </section>
