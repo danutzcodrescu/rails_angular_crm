@@ -1,6 +1,19 @@
 <section>
     <h3>Contact</h3>
     <p>{{contact.contact.first_name}}</p>
-    <p>Index is : {{contact.contact.index}}</p>
-    <button ui-sref="contacts">back</button>
+    <p>Index is : {{contact.index}}</p>
+    <button ui-sref="contacts({contacts_array:contact.all, index:contact.index})">back</button>
+    <div ng-if="contact.check_array">
+         <button ng-if="contact.index>0" 
+            ui-sref="contacts.contact-detail({id:contact.previous, contacts:contact.all, index:contact.index-1})">
+            prev
+        </button>
+        <button ng-if="contact.next"
+            ui-sref="contacts.contact-detail({id:contact.next, contacts:contact.all, index:contact.index+1})">
+            next
+        </button>
+        <button ui-sref="contacts.search({contacts_array:contact.all, contact:{index:contact.index, id:contact.contact.id}, source:'one'})">
+            search
+        </button>
+    </div>
 </section>

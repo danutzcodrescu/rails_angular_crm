@@ -1,11 +1,15 @@
 <section>
 
         <h3>Contacts</h3>
+        <button ui-sref="contacts.search({contacts_array:contacts.contacts, source:'all'})">Search</button>
         <div infinite-scroll='contacts.loadMore()'>
             <article class="col-sm-12" ng-repeat="contact in contacts.contacts">
-                <div class="panel panel-primary">
+                <div class="panel panel-primary" id="{{$index}}">
                     <div class="panel-heading h4" style="margin-top: 0;"><span class="glyphicon glyphicon-user" style="padding-right: 10px;"></span>{{contact.first_name}} {{contact.last_name}}</div>
-                    <button ng-click="contacts.go(contact.id)">check him</button>
+                    
+                    <!-- pass the id and the entire array in order to have the next & previous feture in detailed view -->
+                    
+                    <button ui-sref="contacts.contact-detail({id:contact.id, contacts:contacts.contacts, index:$index})">check him</button>
                     <div class="panel-body">
                         <span class="h5">{{contact.organization}}</span>
                         <div class="row">
@@ -17,10 +21,11 @@
                             </div>
                         </div>
                      </div> 
-                     
                 </div>
             </article>
+            
             <!-- without the clearfix the article's height would be 0 and it will generate an infinite loop of queries -->
+            
             <div class="clearfix"></div>
         </div>
     
