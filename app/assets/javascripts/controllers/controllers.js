@@ -18,7 +18,7 @@ app.controller('PageController', ['$scope', '$window', function($scope, $window)
   };
 }]);    
 
-app.controller('ContactsController', ['$scope', 'contactFactory', 'contacts', 'index', '$timeout', function($scope, contactFactory, contacts, index, $timeout) {
+app.controller('ContactsController', ['$scope', 'contactFactory', 'contacts', 'index', '$timeout', '$window', '$state', function($scope, contactFactory, contacts, index, $timeout, $window, $state) {
   var contact=this;
   contact.contacts=contacts;
   
@@ -30,7 +30,8 @@ app.controller('ContactsController', ['$scope', 'contactFactory', 'contacts', 'i
     // it is required timeout otherwise it will not scroll because nothing is rendered yet. 
     // without minimum 10ms timeout the window seems too freeze for 1ms 
     $timeout(function() {
-      $("html, body").scrollTop($("#"+index).offset().top-30)}, 10);
+      $("html, body").scrollTop($("#"+index).offset().top-30)}
+    , 10);
   }
   
   // infinite-scroll function
@@ -47,13 +48,17 @@ app.controller('ContactsController', ['$scope', 'contactFactory', 'contacts', 'i
       offset+=10;
   };
   
-  contact.go=function(id) {
-     $state.go('contacts.contact-detail', {id:id, contacts:contact.contacts});
+  
+  $window.onkeydown=function(event) {
+      if (event.keyCode==70 && event.ctrlKey || event.keyCode==70 && event.metaKey) {
+        event.preventDefault();
+        $state.go('contacts.search', {contacts_array:contacts.contacts, source:'all'});
+      }
   }
 
 }]);
 
-app.controller('ContactController', ['$scope', 'one_contact', 'contacts_array', 'index', 'contactFactory', function($scope, one_contact, contacts_array, index, contactFactory) {
+app.controller('ContactController', ['$scope', 'one_contact', 'contacts_array', 'index', 'contactFactory', '$window', '$state', function($scope, one_contact, contacts_array, index, contactFactory, $window, $state) {
   var contact=this;
   contact.contact=one_contact;
   contact.all=null;
@@ -82,9 +87,15 @@ app.controller('ContactController', ['$scope', 'one_contact', 'contacts_array', 
     }
   }
   
+  $window.onkeydown=function(event) {
+      if (event.keyCode==70 && event.ctrlKey || event.keyCode==70 && event.metaKey) {
+        event.preventDefault();
+        $state.go('contacts.search', {contacts_array:contact.all, contact:{index:contact.index, id:contact.contact.id}, source:'one'});
+      }
+  }
 }]);
 
-app.controller('searchContactController', ['contacts_array', 'one_contact', 'origin', '$state', function(contacts_array, one_contact, origin, $state){
+app.controller('searchContactController', ['contacts_array', 'one_contact', 'origin', '$state', '$window', function(contacts_array, one_contact, origin, $state, $window){
   var search=this;
   search.contacts=contacts_array;
   search.one=one_contact;
@@ -96,7 +107,10 @@ app.controller('searchContactController', ['contacts_array', 'one_contact', 'ori
       $state.go("contacts.contact-detail", {contacts:contacts_array,index:one_contact.index, id:one_contact.id});
     }
   }
-  console.log(search.contacts);
-  console.log(search.origin);
+  $window.onkeydown=function(event) {
+    if (event.keyCode==27) {
+      search.back();
+    }
+  }
 }])
 
