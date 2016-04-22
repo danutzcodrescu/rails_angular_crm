@@ -8,7 +8,7 @@
                     
                     <!-- pass the id and the entire array in order to have the next & previous feture in detailed view -->
                     
-                    <button ui-sref="contacts.contact-detail({id:contact.id, contacts:contacts.contacts, index:$index})">check him</button>
+                    <button ui-sref="contacts.contact-detail({id:contact.id, contacts:{contacts_array:contacts.contacts, index:$index}, keywords:contacts.keywords})">check him</button>
                     <div class="panel-body">
                         <span class="h5">{{contact.organization}}</span>
                         <div class="row">

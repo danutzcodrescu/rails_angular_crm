@@ -9,7 +9,8 @@ var app=angular.module('crm', ['ui.router', 'ngResource', 'templates', 'infinite
             .state('contacts', {
                 url:'/contacts',
                 params: {contacts_array:null,
-                         index:null
+                         index:null,
+                         keywords:null
                 },
                 views: {'content@': {
                     templateUrl: 'contacts.html',
@@ -18,19 +19,35 @@ var app=angular.module('crm', ['ui.router', 'ngResource', 'templates', 'infinite
                     /* used the promise in order to wait for resolve to be resolved. Othewise, if success and failure would have been
                         included in the query it would have triggered the infinite scroll into an infinite loop of query*/
                     resolve: {contacts: ['contactFactory', '$stateParams', function(contactFactory, $stateParams) {
-                        if ($stateParams.contacts_array==null) {
-                          return contactFactory.getContact().query({limit: 5}).$promise.then( 
-                              function(response){
-                                 return response;
-                          }, function(response) {
-                               console.log(response.statusText);
-                          });
+                        if ($stateParams.contacts_array==null && $stateParams.keywords==null) {
+                              return contactFactory.getContact().query({limit: 5}).$promise.then( 
+                                  function(response){
+                                     return response;
+                              }, function(response) {
+                                   console.log(response.statusText);
+                              });
+                         
                         } else {
-                            return $stateParams.contacts_array;
+                            
+                            if (($stateParams.contacts_array!=null && $stateParams.keywords==null) || ($stateParams.contacts_array!=null && $stateParams.keywords!=null)) {
+                               console.log($stateParams.contacts_array);
+                                return $stateParams.contacts_array;
+                            }  else {
+                              return contactFactory.getContact().query($stateParams.keywords).$promise.then( 
+                                  function(response){
+                                      console.log("INSIDE 2");
+                                     return response;
+                              }, function(response) {
+                                   console.log(response.statusText);
+                              });
+                          } 
                         }
                     }],
                         index: ['$stateParams', function($stateParams) {
                             return $stateParams.index;
+                        }],
+                        keywords: ['$stateParams', function($stateParams) {
+                            return $stateParams.keywords==null ? null : $stateParams.keywords;
                         }]
                     }
                     
@@ -66,7 +83,7 @@ var app=angular.module('crm', ['ui.router', 'ngResource', 'templates', 'infinite
                 // define the url parameter & index that will store the contacts array used in order to navigate left or right
                
                 params: { contacts: null,
-                          index: null
+                          keywords: null
                 }, 
                 views: {'content@':{
                     templateUrl: 'contact.html',
@@ -83,13 +100,11 @@ var app=angular.module('crm', ['ui.router', 'ngResource', 'templates', 'infinite
                     }],
                     
                         // retrieve the contacts array & and the index of the array from the url parameters
-                        
-                        contacts_array: ['$stateParams', function($stateParams) {
+                        contacts: ['$stateParams', function($stateParams) {
                             return $stateParams.contacts;
                         }],
-                        
-                        index: ['$stateParams', function($stateParams) {
-                            return $stateParams.index;
+                        keywords: ['$stateParams', function($stateParams) {
+                            return $stateParams.keywords;
                         }]
                     }
                 }}

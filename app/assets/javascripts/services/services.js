@@ -14,11 +14,3 @@ app.factory('contactFactory', ['$resource', 'baseURL', function($resource, baseU
     return contact
 }]);
 
-app.service('scrollToElementService', ['$location', '$anchorScroll', '$timeout', function($location, $anchorScroll, $timeout) {
-   this.scroll = function(index) { 
-       return $timeout(function(index) {
-          $location.hash(index);
-          $anchorScroll();
-        }, 10);
-   }
-}])

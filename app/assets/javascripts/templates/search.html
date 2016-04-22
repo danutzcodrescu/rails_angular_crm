@@ -1,5 +1,13 @@
 <div>
     <h3>Search</h3>
-    <input type="text" id="first_name" value="search.first_name">
+    <label for "first_name">First Name</label>
+    <input type="text" id="first_name" ng-model="search.first_name" value="">
+    <label for "last_name">Last Name</label>
+    <input type="text" id="last_name" ng-model="search.last_name" value="">
+    <label for "organization">Organization</label>
+    <input type="text" id="organization" ng-model="search.organization" value="">
+    <label for "email">Email</label>
+    <input type="email" id="email" ng-model="search.email" value="">
+    <button ng-click="search.search()">Search</button>
     <button ng-click="search.back()">back</button>
 </div>
