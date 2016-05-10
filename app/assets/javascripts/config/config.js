@@ -24,12 +24,11 @@ angular.module('crm').config(function($stateProvider, $urlRouterProvider) {
                         } else {
                             
                             if (($stateParams.contacts_array!=null && $stateParams.keywords==null) || ($stateParams.contacts_array!=null && $stateParams.keywords!=null)) {
-                               console.log($stateParams.contacts_array);
                                 return $stateParams.contacts_array;
                             }  else {
+                                console.log($stateParams.keywords);
                               return contactFactory.getContact().query($stateParams.keywords).$promise.then( 
                                   function(response){
-                                      console.log("INSIDE 2");
                                      return response;
                               }, function(response) {
                                    console.log(response.statusText);
@@ -52,7 +51,8 @@ angular.module('crm').config(function($stateProvider, $urlRouterProvider) {
                 url:'/search',
                 params: { contacts_array: null,
                           contact: null,
-                          source: null
+                          source: null,
+                          keywords: null
                     
                 },
                 views:{'content@':{
@@ -67,6 +67,9 @@ angular.module('crm').config(function($stateProvider, $urlRouterProvider) {
                       }],
                       origin: ['$stateParams', function($stateParams) {
                           return $stateParams.source;
+                      }],
+                      keywords: ['$stateParams', function($stateParams) {
+                          return $stateParams.keywords;
                       }]
                     }
                 }}

@@ -35,9 +35,13 @@ class Search
             # the correct way to pass parameters as array is parameter[], however the value will be an array
             # in order to decide if it the placeholder is equal to a single value or an array it has to be checked if value is an array 
             criteria+= value.kind_of?(Array) ?  "#{key} IN (:#{key}) AND " :  "#{key} = :#{key} AND "
-            # in order to provide an array the parameter will be an array of lenght 1 with all the values stuffed inside index 0. 
+            
+            # For Postman query in order to provide an array the parameter will be an array of lenght 1 with all the values stuffed inside index 0. 
             # As a result, the string array[0] has to transformed into an array
-            placeholder[:"#{key}"]= value.kind_of?(Array) ? value[0].split(",") : "#{value}"
+            # placeholder[:"#{key}"]= value.kind_of?(Array) ? value[0].split(",") : "#{value}"
+            
+            # for angular no need for spliting because we are creating and array based on existing keywords and pushing to it other elements
+            placeholder[:"#{key}"]= value.kind_of?(Array) ? value : "#{value}"
             x+=1
         end
         where[0]=criteria.slice(0, criteria.length-5)

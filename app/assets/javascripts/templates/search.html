@@ -9,5 +9,6 @@
     <label for "email">Email</label>
     <input type="email" id="email" ng-model="search.email" value="">
     <button ng-click="search.search()">Search</button>
+    <button ng-click="search.extended()" ng-hide="search.keywords==undefined">Extend Search</button>
     <button ng-click="search.back()">back</button>
 </div>
