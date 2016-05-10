@@ -1,4 +1,4 @@
-app.factory('contactFactory', ['$resource', 'baseURL', function($resource, baseURL) {
+angular.module('crm').factory('contactFactory', ['$resource', 'baseURL', function($resource, baseURL) {
     var contact={}
     contact.getContact=function(parameter){
         switch (true) {

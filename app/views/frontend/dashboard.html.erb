@@ -1,21 +1,24 @@
 <div ng-app="crm" ng-controller="PageController as menu" class="container-fluid">
     <div class="row">
         <nav ng-class="menu.message ? (menu.size>=768 ? 'col-sm-2' : 'col-xs-12')
-                       : (menu.size>=768 ? 'col-sm-1' : 'col-xs-12')" style="background-color: blue; height: 100%;"
+                       : (menu.size>=768 ? 'col-sm-1' : 'col-xs-12')"
              ng-style="menu.menu_width">
-            
-              <span class="glyphicon glyphicon-menu-hamburger menu" aria-hidden="true" 
-                     ng-click="menu.message=!menu.message">
-              </span>
-              <ul>
-                  <li><a ui-sref="contacts">contacts</a></li>
+            <div class="menu" ng-click="menu.message=!menu.message">
+             <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+            </div>
+              
+              <ul class="menu_list" ng-style="menu.menu_list">
+                  <li><a ui-sref="contacts">
+                          <span class="glyphicon glyphicon-user"></span>
+                          <span ng-if="menu.message || menu.size<768" style="margin-left:10px;">Contacts</span>
+                      </a>
+                  </li>
               </ul>
         </nav>
-        <div ng-class="menu.message ? (menu.size>=768 ? 'col-sm-10' : 'col-xs-12') 
+        <div id="content" ng-class="menu.message ? (menu.size>=768 ? 'col-sm-10' : 'col-xs-12') 
                         : (menu.size>=768 ? 'col-sm-11' : 'col-xs-12')" 
              ng-style="menu.container_width">
                 <div ui-view="content"></div>
-                
         </div>
     </div>
     

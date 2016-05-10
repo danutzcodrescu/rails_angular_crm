@@ -13,7 +13,7 @@
                                 last_name: Faker::Name.last_name,
                                 email: Faker::Internet.user_name + "#{i}" +"@" + Faker::Internet.domain_name,
                                 organization: Faker::Company.name,
-                                phone_number: Faker::PhoneNumber,
+                                phone_number: Faker::PhoneNumber.phone_number,
                                 main_category: category.sample
                                 )
         i+=1                        
