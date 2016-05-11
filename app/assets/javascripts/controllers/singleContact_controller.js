@@ -4,6 +4,7 @@ angular.module('crm').controller('ContactController', ['one_contact', 'contacts'
   contact.all=null;
   contact.keywords=keywords;
   contact.check_array=false;
+  console.log(keywords);
   if (contacts.contacts_array!=null && contacts.index!=null) {
     contact.check_array=true;
     contact.all=contacts.contacts_array;
@@ -26,14 +27,25 @@ angular.module('crm').controller('ContactController', ['one_contact', 'contacts'
             console.log(error.responseText);
         })
       } else {
-        keywords.offset=offset;
-        contactFactory.getContact().query(keywords, 
-          function(response) {
-            contact.all=contact.all.concat(response);
-            contact.next = contacts.index==contact.all.length-1 ? 0 : contact.all[contacts.index+1].id;
-          }, function(error) {
-            console.log(error.responseText);
-        })
+        if (keywords.constructor === Array) {
+            contactFactory.getContact().query({"keywords[]" : keywords, limit:5, offset:offset, type:"extended"}, 
+              function(response) {
+                contact.all=contact.all.concat(response);
+                contact.next = contacts.index==contact.all.length-1 ? 0 : contact.all[contacts.index+1].id;
+              }, function(error) {
+                console.log(error.responseText);
+            })
+        } else {
+           keywords.offset=offset;
+            contactFactory.getContact().query(keywords, 
+              function(response) {
+                contact.all=contact.all.concat(response);
+                contact.next = contacts.index==contact.all.length-1 ? 0 : contact.all[contacts.index+1].id;
+              }, function(error) {
+                console.log(error.responseText);
+            })
+        }
+       
       }
     } else {
         contact.next = contacts.index==contacts.contacts_array.length-1 ? 0 : contacts.contacts_array[contacts.index+1].id;

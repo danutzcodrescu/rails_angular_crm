@@ -12,22 +12,32 @@ angular.module('crm').controller('searchContactController', ['contacts_array', '
     }
   }
   
-  //simple search function
-  search.search=function() {
+  search.search=function(extend=null) {
     var input=["first_name", "last_name", "organization", "email"];
     var searchterms={};
-    searchterms.limit=5;
     for (i=0; i<input.length; i++) {
-        if (search[input[i]]==undefined) {
-          continue;
-        } else {
-          searchterms[input[i]]=search[input[i]];
-        }  
+      if (search[input[i]]==undefined) {
+        continue;
+      } else {
+        searchterms[input[i]]=search[input[i]];
+      }  
     }
-    $state.go("contacts", {keywords:searchterms, contacts_array: null, index: null});
+    if (extend!=null) {
+      array=[];
+      if (extend=="extended") {
+        array= keywords.constructor === Array ? (array.concat(keywords), array.push(searchterms) ): [keywords,searchterms];
+      } else {
+        array= keywords.constructor === Array ? (array.concat(keywords), array.push(searchterms) ): [keywords];
+        constrain = constraints.constructor === Array ? (array.concat(constraints), array.push(searchterms) ): [constraints,searchterms];
+      }
+      var type = extend == "extended" ? "extended" : "constrained";
+    } else {
+      searchterms.limit=5;
+    }
+    $state.go("contacts", {keywords:extend==null ? searchterms : array, contacts_array: null, index: null, type: type});
   }
   
-  //extended previous search result with additional rows
+  /*extended previous search result with additional rows, useful for searching in arrays, replaced by the simple search with subselects
   search.extended=function() {
     var input=["first_name", "last_name", "organization", "email"];
     var searchterms={};
@@ -61,7 +71,7 @@ angular.module('crm').controller('searchContactController', ['contacts_array', '
       }
     }
     $state.go("contacts", {keywords:searchterms, contacts_array: null, index: null});
-  }
+  }*/
   
   $window.onkeydown=function(event) {
     // escape pressed

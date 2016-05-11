@@ -4,7 +4,9 @@ angular.module('crm').config(function($stateProvider, $urlRouterProvider) {
                 url:'/contacts',
                 params: {contacts_array:null,
                          index:null,
-                         keywords:null
+                         keywords:null,
+                         type: null,
+                         constraints: null
                 },
                 views: {'content@': {
                     templateUrl: 'contacts.html',
@@ -26,13 +28,21 @@ angular.module('crm').config(function($stateProvider, $urlRouterProvider) {
                             if (($stateParams.contacts_array!=null && $stateParams.keywords==null) || ($stateParams.contacts_array!=null && $stateParams.keywords!=null)) {
                                 return $stateParams.contacts_array;
                             }  else {
-                                console.log($stateParams.keywords);
-                              return contactFactory.getContact().query($stateParams.keywords).$promise.then( 
-                                  function(response){
-                                     return response;
-                              }, function(response) {
-                                   console.log(response.statusText);
-                              });
+                              if ($stateParams.keywords.constructor === Array) {
+                                  return contactFactory.getContact().query({'keywords[]':$stateParams.keywords, type:$stateParams.type, limit:10}).$promise.then( 
+                                      function(response){
+                                         return response;
+                                  }, function(response) {
+                                       console.log(response.statusText);
+                                  });
+                              } else { 
+                                  return contactFactory.getContact().query($stateParams.keywords).$promise.then( 
+                                      function(response){
+                                         return response;
+                                  }, function(response) {
+                                       console.log(response.statusText);
+                                  });
+                              }      
                           } 
                         }
                     }],
@@ -41,7 +51,7 @@ angular.module('crm').config(function($stateProvider, $urlRouterProvider) {
                         }],
                         keywords: ['$stateParams', function($stateParams) {
                             return $stateParams.keywords==null ? null : $stateParams.keywords;
-                        }]
+                        }],
                     }
                     
                 }}
@@ -52,8 +62,8 @@ angular.module('crm').config(function($stateProvider, $urlRouterProvider) {
                 params: { contacts_array: null,
                           contact: null,
                           source: null,
-                          keywords: null
-                    
+                          keywords: null,
+                          constraints: null
                 },
                 views:{'content@':{
                     templateUrl: 'search.html',

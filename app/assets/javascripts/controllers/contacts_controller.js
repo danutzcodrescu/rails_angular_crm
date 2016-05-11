@@ -1,10 +1,11 @@
-angular.module('crm').controller('ContactsController', ['contactFactory', 'contacts', 'index', '$timeout', '$window', '$state', 'keywords', function(contactFactory, contacts, index, $timeout, $window, $state, keywords) {
+angular.module('crm').controller('ContactsController', ['contactFactory', 'contacts', 'index', '$timeout', '$window', '$state', 'keywords',  function(contactFactory, contacts, index, $timeout, $window, $state, keywords) {
   var contact=this;
   contact.contacts=contacts;
   
   // declare the offset counter according to the length of what comes from the resolve
   // there might be variations of what comes from the resolve because of the infinite scrolling in the details page
-  contact.keywords=keywords;
+  contact.keywords=keywords
+  console.log(keywords);
   var offset=contacts.length;
   if (index!=null) {
     // it is required timeout otherwise it will not scroll because nothing is rendered yet. 
@@ -40,17 +41,29 @@ angular.module('crm').controller('ContactsController', ['contactFactory', 'conta
       })
       offset+=10;
     } else {
-       keywords.limit=10;
        keywords.offset=offset;
-       contactFactory.getContact().query(keywords, 
-        function(response){
-          var array=response;
-          if (array.length==0) {
-            infiniteStop = true;
-            return false;
-          }
-          contact.contacts=contact.contacts.concat(array);
-        })
+       if (keywords.constructor===Array) {
+         contactFactory.getContact().query({'keywords[]':keywords, type:"extended", limit:10, offset:offset},
+            function(response){
+              var array=response;
+              if (array.length==0) {
+                infiniteStop = true;
+                return false;
+              }
+              contact.contacts=contact.contacts.concat(array);
+            })
+       } else {
+         keywords.limit=10;
+         contactFactory.getContact().query(keywords, 
+            function(response){
+              var array=response;
+              if (array.length==0) {
+                infiniteStop = true;
+                return false;
+              }
+              contact.contacts=contact.contacts.concat(array);
+            })
+       }
        offset+=10;
     }  
   };
