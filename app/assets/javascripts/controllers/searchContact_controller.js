@@ -12,7 +12,6 @@ angular.module('crm').controller('searchContactController', ['contacts_array', '
       $state.go("contacts.contact-detail", {contacts:contacts_array,index:one_contact.index, id:one_contact.id});
     }
   }
-  console.log(constraints);
   search.search=function(extend=null) {
     var input=["first_name", "last_name", "organization", "email"];
     var searchterms={};
@@ -29,16 +28,13 @@ angular.module('crm').controller('searchContactController', ['contacts_array', '
       if (extend=="extended") {
         //extendended constraint
         if (constraints!=null) {
-          var constrain=[];
-          constraints.constructor === Array ? constrain.push.apply(constrain, constraints) : constrain=constraints;
-          var type = "constrainExtended";
-          var extendKeywords=[];
-          constrainKeywords!=null ? ( extendKeywords.push.apply(extendKeywords, constrainKeywords), extendKeywords.push(searchterms)) : extendKeywords.push(searchterms);
-          array=keywords;
+          var constrain={keywords:keywords, constraint: constraints};
+          array=[constrain, searchterms];
         } else {
            keywords.constructor === Array ? (array.push.apply(array, keywords), array.push(searchterms) ): array=[keywords,searchterms];
-           var type = "extended";
+           
         }
+        var type = "extended";
       //constrained  
       } else {
         array= keywords;

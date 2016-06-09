@@ -83,7 +83,7 @@ angular.module('crm').config(function($stateProvider, $urlRouterProvider) {
                             return $stateParams.constraints==null ? null : $stateParams.constraints;
                         }],
                         constrainKeywords: ['$stateParams', function($stateParams) {
-                            return $stateParams.constrainKeywords==null ? null : $stateParams.constraints;
+                            return $stateParams.constrainKeywords==null ? null : $stateParams.constrainKeywords;
                         }],
                     }
                     

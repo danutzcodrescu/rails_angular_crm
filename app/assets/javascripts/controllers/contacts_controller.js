@@ -5,8 +5,8 @@ angular.module('crm').controller('ContactsController', ['contactFactory', 'conta
   // there might be variations of what comes from the resolve because of the infinite scrolling in the details page
   contact.keywords=keywords;
   contact.constraints=constraints;
-  console.log(constraints);
   contact.constrainKeywords=constrainKeywords;
+  console.log(constrainKeywords);
   var offset=contacts.length;
   if (index!=null) {
     // it is required timeout otherwise it will not scroll because nothing is rendered yet. 
