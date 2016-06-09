@@ -68,7 +68,7 @@ class Search
         criteria=""
         placeholder={}
         #x is used to create the unique placeholders
-        x=0
+        
         if (simple!=nil)
             simple.each do |key, value|
                 #skip over no-properties keys like limit, offset; the rest are keys provided for syncronous calls with rails
@@ -76,85 +76,25 @@ class Search
                 if (keys.include?(key) or value=="")
                     next
                 end
+                # the correct way to pass parameters as array is parameter[], however the value will be an array
+                # in order to decide if it the placeholder is equal to a single value or an array it has to be checked if value is an array 
+                criteria+= value.kind_of?(Array) ?  "#{key} IN (:#{key}) AND " :  "#{key} = :#{key} AND "
                 
-                criteria+= "#{key} = :#{key} AND "
-                
-                placeholder[:"#{key}"]= "#{value}"
+                placeholder[:"#{key}"]= value.kind_of?(Array) ? value : "#{value}"
             end
             #slice the final AND
             criteria=criteria.slice(0, criteria.length-5)
         else
             # extended
-          
-            keywords.each do |value|
-                #transform the string into an object
-                
-                object=JSON.parse(value, {:symbolize_names=>true})
-                criteria+=" OR "
-                y="a"
-                #iterate over the hash properties and skip over limit
-                object.except(:limit).each do |keys, values|
-                    if keys==:keywords || keys==:constraint
-                        criteria+="("
-                        y.next!
-                        if keys==:keywords
-                            criteria+="("
-                            values.except(:limit).each do |id, val|
-                                criteria+="#{id} = :#{id}#{y} OR "
-                                placeholder[:"#{id}#{y}"]= "#{val}"
-                               
-                                # y is instanciated as a, next will transform in b , c, d and so on
-                            end
-                            criteria=criteria.slice(0, criteria.length-4)
-                            criteria+=") AND "
-                        else
-                            values.except(:limit).each do |id, val|
-                                criteria+="#{id} = :#{id}#{y} AND "
-                                placeholder[:"#{id}#{y}"]= "#{val}"
-                                y.next!
-                                # y is instanciated as a, next will transform in b , c, d and so on
-                            end
-                        end
-                        criteria=criteria.slice(0, criteria.length-5)
-                        criteria+=")"
-                    else
-                        criteria+= "#{keys} = :#{keys}#{x} AND "
-                        # key and x one close to each other are used to define unique placeholders
-                        placeholder[:"#{keys}#{x}"]= "#{values}"
-                    end
-                   
-                end
-                x+=1
-                #slice the final AND
-                criteria=criteria.slice(0, criteria.length-5)
-            end
-               
+            ext=sql(keywords, "extended")
+            criteria=ext[0]
+            placeholder=ext[1]   
             criteria=criteria.slice(4, criteria.length-1)
             # constrained || extended constraint
             if (constraints!=nil)
-                statementCreator={}
-                if (constrainKeywords!=nil)
-                     statementCreator[:constrainKeywords]=constrainKeywords
-                end
-                statementCreator[:constraints]=constraints
-                constrained=""
-                placeholderConstraint={}
-                statementCreator.each do |key, value|
-                    value.each do |value|
-                        object=JSON.parse(value, {:symbolize_names=>true})
-                        object.except(:limit).each do |keys, values|
-                            constrained+= "#{keys} = :#{keys}#{x} AND "
-                            # key and x one close to each other are used to define unique placeholders
-                            placeholderConstraint[:"#{keys}#{x}"]= "#{values}"
-                            x+=1
-                        end
-                    end
-                    constrained=constrained.slice(0, constrained.length-5)
-                    constrained+=" OR "
-
-                end
-                constrained=constrained.slice(0, constrained.length-4)
-                constrained+=" AND "
+                ext=sql(constraints, "constraint")
+                constrained=ext[0]+" AND "
+                placeholderConstraint=ext[1]
             end
         end  
         returned = constraints==nil  ? [criteria, placeholder] : [criteria, placeholder, constrained, placeholderConstraint]
@@ -164,6 +104,7 @@ class Search
         criteria=search_terms(values)
         #first select the ids from the keywords
         #then convert them to an array and to a string in order to be inserted inside the IN statement
+        byebug
         ids=Object.const_get(model(controller)).select("id") .where(criteria[0], criteria[1])
         array=[]
         ids.to_a.map {|value| array << value["id"]}
@@ -172,5 +113,28 @@ class Search
         #execute the sql stament: SELECT  "contacts".* FROM "contacts" WHERE "contacts"."id" IN (1,22,54) AND first_name='Test' Limit 10"
         #it is not the safest solution, but if we use the placeholder it adds extra '' and the statement is not parsed
         criteria
+    end
+    
+    def sql(keywords, type)
+        x=0
+        array=[]
+        criteria=""
+        placeholder={}
+        keywords.each do |value|
+            #transform the string into an object
+            
+            object=JSON.parse(value, {:symbolize_names=>true})
+            criteria+=" OR " unless type=="constraint"
+            #iterate over the hash properties and skip over limit
+            object.except(:limit).each do |keys, values|
+                criteria+= "#{keys} = :#{keys}#{x} AND "
+                # key and x one close to each other are used to define unique placeholders
+                placeholder[:"#{keys}#{x}"]= "#{values}"
+            end
+            x+=1
+            #slice the final AND
+            criteria=criteria.slice(0, criteria.length-5) unless type=="keywords"
+        end
+        array=[criteria,placeholder]
     end
 end
