@@ -1,6 +1,9 @@
 <section>
         <h3>Contacts</h3>
-        <button ui-sref="contacts.search({contacts_array:contacts.contacts, source:'all', keywords: contacts.keywords})">Search</button>
+        <button 
+            ui-sref="contacts.search({contacts_array:contacts.contacts, source:'all', keywords: contacts.keywords, constraints: contacts.constraints, constrainKeywords: contacts.constrainKeywords})">
+            Search
+        </button>
         <div infinite-scroll='contacts.loadMore()'>
             <article class="col-sm-12" ng-repeat="contact in contacts.contacts">
                 <div class="panel panel-primary" id="{{$index}}">

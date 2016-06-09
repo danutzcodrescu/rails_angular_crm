@@ -1,9 +1,10 @@
-angular.module('crm').controller('searchContactController', ['contacts_array', 'one_contact', 'origin', '$state', '$window', 'keywords', function(contacts_array, one_contact, origin, $state, $window, keywords){
+angular.module('crm').controller('searchContactController', ['contacts_array', 'one_contact', 'origin', '$state', '$window', 'keywords', 'constraints', 'constrainKeywords', function(contacts_array, one_contact, origin, $state, $window, keywords, constraints, constrainKeywords){
   var search=this;
   search.contacts=contacts_array;
   search.one=one_contact;
   search.origin=origin;
   search.keywords=keywords;
+  search.constrainKeywords=constrainKeywords;
   search.back=function() {
     if (origin=="all") {
       $state.go("contacts", {contacts_array:contacts_array});
@@ -11,30 +12,50 @@ angular.module('crm').controller('searchContactController', ['contacts_array', '
       $state.go("contacts.contact-detail", {contacts:contacts_array,index:one_contact.index, id:one_contact.id});
     }
   }
-  
+  console.log(constraints);
   search.search=function(extend=null) {
     var input=["first_name", "last_name", "organization", "email"];
     var searchterms={};
     for (i=0; i<input.length; i++) {
-      if (search[input[i]]==undefined) {
+      if (search[input[i]]==undefined || search[input[i]]=="") {
         continue;
       } else {
         searchterms[input[i]]=search[input[i]];
       }  
     }
     if (extend!=null) {
-      array=[];
+      var array=[];
+      //extended
       if (extend=="extended") {
-        array= keywords.constructor === Array ? (array.concat(keywords), array.push(searchterms) ): [keywords,searchterms];
+        //extendended constraint
+        if (constraints!=null) {
+          var constrain=[];
+          constraints.constructor === Array ? constrain.push.apply(constrain, constraints) : constrain=constraints;
+          var type = "constrainExtended";
+          var extendKeywords=[];
+          constrainKeywords!=null ? ( extendKeywords.push.apply(extendKeywords, constrainKeywords), extendKeywords.push(searchterms)) : extendKeywords.push(searchterms);
+          array=keywords;
+        } else {
+           keywords.constructor === Array ? (array.push.apply(array, keywords), array.push(searchterms) ): array=[keywords,searchterms];
+           var type = "extended";
+        }
+      //constrained  
       } else {
-        array= keywords.constructor === Array ? (array.concat(keywords), array.push(searchterms) ): [keywords];
-        constrain = constraints.constructor === Array ? (array.concat(constraints), array.push(searchterms) ): [constraints,searchterms];
+        array= keywords;
+        if (constraints==null) {
+          var constrain=[searchterms];
+        } else {
+          var constrain=[];
+          constraints.constructor === Array ? (constrain.push.apply(constrain, constraints), constrain.push(searchterms) ): constrain=[constraints,searchterms];
+        }
+        var type="constrained";
       }
-      var type = extend == "extended" ? "extended" : "constrained";
     } else {
       searchterms.limit=5;
     }
-    $state.go("contacts", {keywords:extend==null ? searchterms : array, contacts_array: null, index: null, type: type});
+    $state.go("contacts", {keywords:extend==null ? searchterms : array, contacts_array: null, index: null, type: type, 
+                           constraints: extend != null && extend!="extended" || type=="constrainExtended" & extend != null ? constrain : null,
+                           constrainKeywords: type=="constrainExtended" ? extendKeywords : null});
   }
   
   /*extended previous search result with additional rows, useful for searching in arrays, replaced by the simple search with subselects
