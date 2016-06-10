@@ -121,22 +121,46 @@ class Search
         placeholder={}
         keywords.each do |value|
             #transform the string into an object
-            
             object=JSON.parse(value, {:symbolize_names=>true})
             criteria+=" OR " unless type=="constraint"
-            #iterate over the hash properties and skip over limit
-            object.except(:limit).each do |keys, values|
-                criteria+= "#{keys} = :#{keys}#{x}"
-                criteria+= " AND " unless type=="extended"
-                # key and x one close to each other are used to define unique placeholders
-                placeholder[:"#{keys}#{x}"]= "#{values}"
+            if object[:keywords]
+                t=1
+                #iterate over the two properties :keywords and :constrain
+                criteria+="("
+                object.each do |k,v|
+                    if k==:constraint
+                        criteria=criteria.slice(0, criteria.length-4)
+                        criteria+=") AND "
+                    else
+                        criteria+="("
+                    end
+                    #iterate over the array inside the :keywords/:constraint-
+                    #then iterate over the properties inside the array
+                    v.each do |item| 
+                       item.except(:limit).each do |prop,val| 
+                           criteria+= "#{prop} = :#{prop}#{t}"
+                           criteria+= k==:keywords ? " OR " : " AND "
+                           placeholder[:"#{prop}#{t}"]= "#{val}"
+                           t+=1
+                        end
+                    end
+                    if k==:constraint
+                         criteria=criteria.slice(0, criteria.length-5)
+                         criteria+=") AND "
+                    end
+                end
+            else
+                object.except(:limit).each do |keys, values|
+                    criteria+= "#{keys} = :#{keys}#{x}"
+                    criteria+= " AND " unless type=="extended"
+                    # key and x one close to each other are used to define unique placeholders
+                    placeholder[:"#{keys}#{x}"]= "#{values}"
+                end
+                x+=1
             end
-          
-            x+=1
             #slice the final AND
-            #criteria=criteria.slice(0, criteria.length-5) unless type="extended"
+            criteria=criteria.slice(0, criteria.length-5) if object[:keywords]
         end
-  
         array=[criteria,placeholder]
     end
 end
