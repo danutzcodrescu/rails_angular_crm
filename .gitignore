@@ -13,4 +13,4 @@
 /tmp
 /node_modules
 gulpfile.js
-database.yml
+/config/database.yml

@@ -93,7 +93,7 @@ class Search
             # constrained || extended constraint
             if (constraints!=nil)
                 ext=sql(constraints, "constraint")
-                constrained=ext[0]+" AND "
+                constrained=ext[0]
                 placeholderConstraint=ext[1]
             end
         end  
@@ -104,7 +104,6 @@ class Search
         criteria=search_terms(values)
         #first select the ids from the keywords
         #then convert them to an array and to a string in order to be inserted inside the IN statement
-        byebug
         ids=Object.const_get(model(controller)).select("id") .where(criteria[0], criteria[1])
         array=[]
         ids.to_a.map {|value| array << value["id"]}
@@ -127,14 +126,17 @@ class Search
             criteria+=" OR " unless type=="constraint"
             #iterate over the hash properties and skip over limit
             object.except(:limit).each do |keys, values|
-                criteria+= "#{keys} = :#{keys}#{x} AND "
+                criteria+= "#{keys} = :#{keys}#{x}"
+                criteria+= " AND " unless type=="extended"
                 # key and x one close to each other are used to define unique placeholders
                 placeholder[:"#{keys}#{x}"]= "#{values}"
             end
+          
             x+=1
             #slice the final AND
-            criteria=criteria.slice(0, criteria.length-5) unless type=="keywords"
+            #criteria=criteria.slice(0, criteria.length-5) unless type="extended"
         end
+  
         array=[criteria,placeholder]
     end
 end
