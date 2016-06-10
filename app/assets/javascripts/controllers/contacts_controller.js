@@ -1,12 +1,10 @@
-angular.module('crm').controller('ContactsController', ['contactFactory', 'contacts', 'index', '$timeout', '$window', '$state', 'keywords', 'constraints', 'constrainKeywords',  function(contactFactory, contacts, index, $timeout, $window, $state, keywords, constraints, constrainKeywords) {
+angular.module('crm').controller('ContactsController', ['contactFactory', 'contacts', 'index', '$timeout', '$window', '$state', 'keywords', 'constraints', function(contactFactory, contacts, index, $timeout, $window, $state, keywords, constraints) {
   var contact=this;
   contact.contacts=contacts;
   // declare the offset counter according to the length of what comes from the resolve
   // there might be variations of what comes from the resolve because of the infinite scrolling in the details page
   contact.keywords=keywords;
   contact.constraints=constraints;
-  contact.constrainKeywords=constrainKeywords;
-  console.log(constrainKeywords);
   var offset=contacts.length;
   if (index!=null) {
     // it is required timeout otherwise it will not scroll because nothing is rendered yet. 
@@ -72,7 +70,7 @@ angular.module('crm').controller('ContactsController', ['contactFactory', 'conta
   $window.onkeydown=function(event) {
       if (event.keyCode==70 && event.ctrlKey || event.keyCode==70 && event.metaKey) {
         event.preventDefault();
-         $state.go('contacts.search', {contacts_array:contact.contacts, source:'all', keywords: keywords, constraints: constraints, constrainKeywords: constrainKeywords});
+         $state.go('contacts.search', {contacts_array:contact.contacts, source:'all', keywords: keywords, constraints: constraints});
       }
   }
 

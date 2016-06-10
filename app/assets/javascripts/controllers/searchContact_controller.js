@@ -28,7 +28,12 @@ angular.module('crm').controller('searchContactController', ['contacts_array', '
       if (extend=="extended") {
         //extendended constraint
         if (constraints!=null) {
-          var constrain={keywords:keywords, constraint: constraints};
+         
+          console.log(keywords);
+           
+         
+            var constrain={keywords:keywords, constraint: constraints};
+       
           array=[constrain, searchterms];
         } else {
            keywords.constructor === Array ? (array.push.apply(array, keywords), array.push(searchterms) ): array=[keywords,searchterms];

@@ -1,7 +1,7 @@
 <section>
         <h3>Contacts</h3>
         <button 
-            ui-sref="contacts.search({contacts_array:contacts.contacts, source:'all', keywords: contacts.keywords, constraints: contacts.constraints, constrainKeywords: contacts.constrainKeywords})">
+            ui-sref="contacts.search({contacts_array:contacts.contacts, source:'all', keywords: contacts.keywords, constraints: contacts.constraints})">
             Search
         </button>
         <div infinite-scroll='contacts.loadMore()'>

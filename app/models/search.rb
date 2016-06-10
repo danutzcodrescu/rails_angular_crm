@@ -3,7 +3,7 @@ class Search
     
     def initialize(values)
         criteria=[]
-        criteria=search_terms(values) unless values['type']=="constrained" || values['type']=="constrainExtended"
+        criteria=search_terms(values) unless values['type']=="constrained"
         #criteria[0] is the prepared sql, while criteria[1] is the placeholders hash
         case (values['type'])
             when "extended"
@@ -13,10 +13,6 @@ class Search
                         .where(id:Object.const_get(model(values["controller"])).select("id")
                         .where(criteria[0], criteria[1])).limit(values["limit"]).offset(values["offset"]);
             when "constrained"
-               criteria=multipleSelects(values["controller"], values)
-               @result=Object.const_get(model(values["controller"]))
-                     .where(criteria[2], criteria[3]).limit(values["limit"]).offset(values["offset"]);
-            when "constrainExtended" 
                criteria=multipleSelects(values["controller"], values)
                @result=Object.const_get(model(values["controller"]))
                      .where(criteria[2], criteria[3]).limit(values["limit"]).offset(values["offset"]);
@@ -49,14 +45,12 @@ class Search
                 statement=createStatement(values['keywords'])
             when "constrained"
                 statement=createStatement(values['keywords'], values["constraints"])
-            when "constrainExtended"
-                 statement=createStatement(values['keywords'], values["constraints"], nil, values["constrainKeywords"])   
             else
                 statement=createStatement(nil, nil, values, nil)
         end
         where[0]=statement[0]
         where[1]=statement[1]
-        if (values["type"]=="constrained" || values["type"]=="constrainExtended")
+        if (values["type"]=="constrained")
             where[2] = statement[2]
             where[3] = statement[3]
         end
@@ -108,7 +102,7 @@ class Search
         array=[]
         ids.to_a.map {|value| array << value["id"]}
         strings=array.join(',')
-        criteria[2] += "ID IN (#{strings})"
+        criteria[2] += " AND ID IN (#{strings})"
         #execute the sql stament: SELECT  "contacts".* FROM "contacts" WHERE "contacts"."id" IN (1,22,54) AND first_name='Test' Limit 10"
         #it is not the safest solution, but if we use the placeholder it adds extra '' and the statement is not parsed
         criteria
@@ -152,11 +146,12 @@ class Search
             else
                 object.except(:limit).each do |keys, values|
                     criteria+= "#{keys} = :#{keys}#{x}"
-                    criteria+= " AND " unless type=="extended"
+                    criteria+= " AND "
                     # key and x one close to each other are used to define unique placeholders
                     placeholder[:"#{keys}#{x}"]= "#{values}"
                 end
                 x+=1
+                criteria=criteria.slice(0, criteria.length-5) 
             end
             #slice the final AND
             criteria=criteria.slice(0, criteria.length-5) if object[:keywords]

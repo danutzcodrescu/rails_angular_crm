@@ -6,8 +6,7 @@ angular.module('crm').config(function($stateProvider, $urlRouterProvider) {
                          index:null,
                          keywords:null,
                          type: null,
-                         constraints: null,
-                         constrainKeywords: null
+                         constraints: null
                 },
                 views: {'content@': {
                     templateUrl: 'contacts.html',
@@ -30,31 +29,23 @@ angular.module('crm').config(function($stateProvider, $urlRouterProvider) {
                                 return $stateParams.contacts_array;
                             }  else {
                               if ($stateParams.constraints !=null) {
-                                  if ($stateParams.constrainKeywords!=null) {
-                                      return contactFactory.getContact().query({'keywords[]':$stateParams.keywords, 'constraints[]': $stateParams.constraints, type:$stateParams.type, limit:10, 'constrainKeywords[]' : $stateParams.constrainKeywords}).$promise.then( 
-                                              function(response){
-                                                 return response;
-                                          }, function(response) {
-                                               console.log(response.statusText);
-                                        }); 
-                                  } else {
-                                      if ($stateParams.constraints.constructor === Array) {
+                             
+                                    if ($stateParams.constraints.constructor === Array) {
                                           return contactFactory.getContact().query({'keywords[]':$stateParams.keywords, 'constraints[]': $stateParams.constraints, type:$stateParams.type, limit:10}).$promise.then( 
                                               function(response){
                                                  return response;
                                           }, function(response) {
                                                console.log(response.statusText);
                                           });
-                                      } else {
+                                    } else {
                                           return contactFactory.getContact().query({'keywords[]':$stateParams.keywords, constraints : $stateParams.constraints, type:$stateParams.type, limit:10}).$promise.then( 
                                               function(response){
                                                  return response;
                                           }, function(response) {
                                                console.log(response.statusText);
                                           });
-                                      }
-                                  }
-                              }        
+                                    }
+                                }
                               if ($stateParams.keywords.constructor === Array) {
                                   return contactFactory.getContact().query({'keywords[]':$stateParams.keywords, type:$stateParams.type, limit:10}).$promise.then( 
                                       function(response){
@@ -81,10 +72,7 @@ angular.module('crm').config(function($stateProvider, $urlRouterProvider) {
                         }],
                         constraints: ['$stateParams', function($stateParams) {
                             return $stateParams.constraints==null ? null : $stateParams.constraints;
-                        }],
-                        constrainKeywords: ['$stateParams', function($stateParams) {
-                            return $stateParams.constrainKeywords==null ? null : $stateParams.constrainKeywords;
-                        }],
+                        }]
                     }
                     
                 }}
