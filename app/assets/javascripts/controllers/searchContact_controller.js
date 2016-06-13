@@ -1,10 +1,9 @@
-angular.module('crm').controller('searchContactController', ['contacts_array', 'one_contact', 'origin', '$state', '$window', 'keywords', 'constraints', 'constrainKeywords', function(contacts_array, one_contact, origin, $state, $window, keywords, constraints, constrainKeywords){
+angular.module('crm').controller('searchContactController', ['contacts_array', 'one_contact', 'origin', '$state', '$window', 'keywords', 'constraints', function(contacts_array, one_contact, origin, $state, $window, keywords, constraints){
   var search=this;
   search.contacts=contacts_array;
   search.one=one_contact;
   search.origin=origin;
   search.keywords=keywords;
-  search.constrainKeywords=constrainKeywords;
   search.back=function() {
     if (origin=="all") {
       $state.go("contacts", {contacts_array:contacts_array});

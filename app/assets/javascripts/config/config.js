@@ -72,7 +72,10 @@ angular.module('crm').config(function($stateProvider, $urlRouterProvider) {
                         }],
                         constraints: ['$stateParams', function($stateParams) {
                             return $stateParams.constraints==null ? null : $stateParams.constraints;
-                        }]
+                        }],
+                        type: ['$stateParams', function($stateParams) {
+                            return $stateParams.type;
+                        }],
                     }
                     
                 }}
@@ -118,7 +121,9 @@ angular.module('crm').config(function($stateProvider, $urlRouterProvider) {
                 // define the url parameter & index that will store the contacts array used in order to navigate left or right
                
                 params: { contacts: null,
-                          keywords: null
+                          keywords: null,
+                          constrains: null,
+                          type: null,
                 }, 
                 views: {'content@':{
                     templateUrl: 'contact.html',
@@ -140,7 +145,13 @@ angular.module('crm').config(function($stateProvider, $urlRouterProvider) {
                         }],
                         keywords: ['$stateParams', function($stateParams) {
                             return $stateParams.keywords;
-                        }]
+                        }],
+                        constrains: ['$stateParams', function($stateParams) {
+                            return $stateParams.constrains;
+                        }],
+                        type: ['$stateParams', function($stateParams) {
+                            return $stateParams.type;
+                        }],
                     }
                 }}
             })

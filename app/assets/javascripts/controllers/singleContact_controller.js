@@ -1,10 +1,11 @@
-angular.module('crm').controller('ContactController', ['one_contact', 'contacts', 'contactFactory', '$window', '$state', 'keywords', function(one_contact, contacts, contactFactory, $window, $state, keywords) {
+angular.module('crm').controller('ContactController', ['one_contact', 'contacts', 'contactFactory', '$window', '$state', 'keywords', 'constrains', 'type', function(one_contact, contacts, contactFactory, $window, $state, keywords, constrains, type) {
   var contact=this;
   contact.contact=one_contact;
   contact.all=null;
   contact.keywords=keywords;
   contact.check_array=false;
-  console.log(keywords);
+  contact.constrain=constrains;
+  console.log(constrains);
   if (contacts.contacts_array!=null && contacts.index!=null) {
     contact.check_array=true;
     contact.all=contacts.contacts_array;
@@ -28,7 +29,7 @@ angular.module('crm').controller('ContactController', ['one_contact', 'contacts'
         })
       } else {
         if (keywords.constructor === Array) {
-            contactFactory.getContact().query({"keywords[]" : keywords, limit:5, offset:offset, type:"extended"}, 
+            contactFactory.getContact().query({"keywords[]" : keywords, 'constraints[]' :constrains, limit:5, offset:offset, type:type}, 
               function(response) {
                 contact.all=contact.all.concat(response);
                 contact.next = contacts.index==contact.all.length-1 ? 0 : contact.all[contacts.index+1].id;
