@@ -102,7 +102,7 @@ class Search
         array=[]
         ids.to_a.map {|value| array << value["id"]}
         strings=array.join(',')
-        criteria[2] += " AND ID IN (#{strings})"
+        criteria[2] += " ID IN (#{strings})"
         #execute the sql stament: SELECT  "contacts".* FROM "contacts" WHERE "contacts"."id" IN (1,22,54) AND first_name='Test' Limit 10"
         #it is not the safest solution, but if we use the placeholder it adds extra '' and the statement is not parsed
         criteria
@@ -151,7 +151,8 @@ class Search
                     placeholder[:"#{keys}#{x}"]= "#{values}"
                 end
                 x+=1
-                criteria=criteria.slice(0, criteria.length-5) 
+                criteria=criteria.slice(0, criteria.length-5)
+                criteria+=" AND " if type=="constraint"
             end
             #slice the final AND
             criteria=criteria.slice(0, criteria.length-5) if object[:keywords]
