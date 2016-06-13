@@ -28,13 +28,30 @@ angular.module('crm').controller('searchContactController', ['contacts_array', '
       if (extend=="extended") {
         //extendended constraint
         if (constraints!=null) {
-         
-          console.log(keywords);
-           
-         
+          keywords.constructor === Array ? keywords = keywords : keywords=new Array(keywords)
+          // check if the keywords array has a property called keywords inside
+          // after that the keywords and constrain have to be extracted from within keywords array and recreated
+          if (keywords[0].hasOwnProperty("keywords")) {
+            var keys=[];
+            keys=keywords[0].keywords;
+            keywords[0].keywords=keys;
+            // add the rest of the keywords to the keywords property
+            for (var i=1; i<keywords.length; i++) {
+              var temp=keywords[i];
+              keywords.splice(i,1);
+              keywords[0].keywords.push(temp);
+            }
+            
+            //extract the constrain and concatenate it with the other constraints
+            var cons=[];
+            cons=keywords[0].constraint;
+            keywords[0].constraint= cons.concat(constraints);
+            array=keywords
+            array.push(searchterms);
+          } else {
             var constrain={keywords:keywords, constraint: constraints};
-       
-          array=[constrain, searchterms];
+            array=[constrain, searchterms];
+          }
         } else {
            keywords.constructor === Array ? (array.push.apply(array, keywords), array.push(searchterms) ): array=[keywords,searchterms];
            

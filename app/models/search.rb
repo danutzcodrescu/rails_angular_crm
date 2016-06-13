@@ -118,7 +118,8 @@ class Search
             object=JSON.parse(value, {:symbolize_names=>true})
             criteria+=" OR " unless type=="constraint"
             if object[:keywords]
-                t=1
+                # t starts at 1000 so that it does not get confused with other placeholders that are concatenated with x
+                t=1000
                 #iterate over the two properties :keywords and :constrain
                 criteria+="("
                 object.each do |k,v|
@@ -151,8 +152,8 @@ class Search
                     placeholder[:"#{keys}#{x}"]= "#{values}"
                 end
                 x+=1
-                criteria=criteria.slice(0, criteria.length-5)
-                criteria+=" AND " if type=="constraint"
+                # slice the final AND/OR of the final iteration inside the object
+                criteria=criteria.slice(0, criteria.length-5) unless type=="constraint"
             end
             #slice the final AND
             criteria=criteria.slice(0, criteria.length-5) if object[:keywords]
