@@ -17,7 +17,6 @@ angular.module('crm').controller('ContactsController', ['contactFactory', 'conta
   var infiniteStop=contacts.length < 5 ? true : false;
   // infinite-scroll function
   contact.loadMore=function() {
-    
     // stop the function if there are no more additional records to be added
     if (infiniteStop) {
       return false;
@@ -67,6 +66,21 @@ angular.module('crm').controller('ContactsController', ['contactFactory', 'conta
        offset+=10;
     }  
   };
+  
+  contact.showAll=function() {
+    keywords=constraints=type=contact.keywords=contact.constraints=contact.type=null;
+    var all={};
+    all.limit=10;
+    contactFactory.getContact().query(all, 
+      function(response){
+        var array=response;
+        if (array.length==0) {
+          infiniteStop = true;
+          return false;
+        }
+        contact.contacts=array;
+    })
+  }
   
   $window.onkeydown=function(event) {
       if (event.keyCode==70 && event.ctrlKey || event.keyCode==70 && event.metaKey) {

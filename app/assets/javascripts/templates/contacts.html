@@ -4,6 +4,8 @@
             ui-sref="contacts.search({contacts_array:contacts.contacts, source:'all', keywords: contacts.keywords, constraints: contacts.constraints})">
             Search
         </button>
+        <button ng-click="contacts.showAll()" ng-hide="contacts.keywords==null"> Show All
+        </button>
         <div infinite-scroll='contacts.loadMore()'>
             <article class="col-sm-12" ng-repeat="contact in contacts.contacts">
                 <div class="panel panel-primary" id="{{$index}}">
